@@ -167,6 +167,6 @@ app.get(/.*/, (_request, response) => {
   response.sendFile(path.join(distPath, "index.html"));
 });
 
-app.listen(port, () => {
+app.listen(port, "127.0.0.1", () => {
   console.log(`AI将棋サーバーを起動しました: http://localhost:${port}`);
 });
