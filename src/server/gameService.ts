@@ -179,6 +179,7 @@ export class GameService {
     }
 
     this.aiPlaying = false;
+    this.closePlayers(); // USIエンジン等の外部プロセスをここで終了
 
     if (this.status === "playing") {
       this.status = "paused";
@@ -245,10 +246,14 @@ export class GameService {
 
     try {
       const request = await player.chooseMove(state);
-      this.applyMove(request);
+      if (this.status === "playing") {
+        this.applyMove(request);
+      }
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.finish(`AI対局中にエラーが発生しました: ${message}`);
+      if (this.status === "playing") {
+        const message = error instanceof Error ? error.message : String(error);
+        this.finish(`AI対局中にエラーが発生しました: ${message}`);
+      }
     } finally {
       this.aiThinking = false;
     }
