@@ -1,0 +1,43 @@
+{
+  "name": "ai-shogi",
+  "version": "1.0.0",
+  "description": "AI同士の将棋対局を観戦・再生するLocalWebアプリ",
+  "main": "src/server/server.ts",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c blue,green \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "tsx watch src/server/server.ts",
+    "dev:client": "vite --host 127.0.0.1",
+    "build": "tsc && vite build",
+    "start": "tsx src/server/server.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "agent:black": "tsx src/agents/ollamaAgent.ts --side black --name 先手Gemma4",
+    "agent:white": "tsx src/agents/ollamaAgent.ts --side white --name 後手Gemma4",
+    "agents": "concurrently -k -n black,white -c magenta,cyan \"npm run agent:black\" \"npm run agent:white\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "concurrently": "^9.2.1",
+    "express": "^5.2.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "tsshogi": "^2.3.3",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "vitest": "^4.1.7"
+  }
+}

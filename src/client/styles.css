@@ -1,0 +1,588 @@
+:root {
+  color: #20242a;
+  background: #f5f6f0;
+  font-family:
+    "Yu Gothic UI",
+    "Meiryo",
+    system-ui,
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  border: 1px solid #9ca391;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #20242a;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+button:hover:not(:disabled) {
+  border-color: #4b6f44;
+  background: #f0f5ec;
+}
+
+button:disabled,
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.loading {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+}
+
+.appShell {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.topBar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #d4d8cc;
+  padding-bottom: 14px;
+}
+
+.topBar h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+}
+
+.topBar p {
+  margin: 0;
+  color: #5a6257;
+}
+
+.statusStrip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.statusStrip span {
+  border: 1px solid #c9cfbf;
+  border-radius: 6px;
+  background: #fff;
+  padding: 6px 10px;
+}
+
+.dangerText {
+  border-color: #b54a3b !important;
+  color: #9d3428;
+}
+
+.checkedBadge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: #fff0b0;
+  border: 1px solid #c8a000;
+  color: #7a5800;
+  font-weight: bold;
+  font-size: 14px;
+  animation: checkedPulse 1s ease-in-out infinite;
+}
+
+@keyframes checkedPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.finishedBanner {
+  margin: 12px 20px 0;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: #1e3a1a;
+  color: #e8f5e0;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.resignButton {
+  background: #fff5f5;
+  border-color: #c97070;
+  color: #8b2020;
+  font-size: 13px;
+}
+
+.resignButton:hover:not(:disabled) {
+  background: #ffe8e8;
+  border-color: #a03030;
+}
+
+.errorBanner {
+  margin-top: 14px;
+  border: 1px solid #c95c4f;
+  border-radius: 6px;
+  background: #fff1ee;
+  padding: 10px 12px;
+  color: #8d2e24;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(420px, 760px) minmax(320px, 1fr);
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.boardArea {
+  min-width: 0;
+}
+
+.hands {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.hand {
+  border: 1px solid #d6d0bd;
+  border-radius: 6px;
+  background: #fffdf7;
+  padding: 10px;
+}
+
+.handTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  color: #4f5949;
+  font-weight: 700;
+}
+
+.handClock {
+  font-weight: normal;
+  font-size: 13px;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  color: #7a8475;
+}
+
+.handClockActive {
+  color: #2a6020;
+  font-weight: bold;
+}
+
+.handPieces {
+  display: flex;
+  min-height: 28px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.handPiece {
+  border: 1px solid #d8c37f;
+  border-radius: 6px;
+  background: #fff8dd;
+  color: #211a14;
+  padding: 3px 7px;
+  cursor: pointer;
+}
+
+.handPiece:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.handPieceSelected {
+  background: #aed880 !important;
+  border-color: #3d7a30 !important;
+}
+
+.promoOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+}
+
+.promoDialog {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px 40px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
+}
+
+.promoDialog p {
+  margin: 0 0 18px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.promoDialog .buttonRow {
+  justify-content: center;
+  gap: 16px;
+}
+
+.promoDialog button {
+  min-width: 90px;
+  font-size: 16px;
+}
+
+.board {
+  display: grid;
+  width: min(92vw, 720px);
+  aspect-ratio: 1 / 1;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  border: 3px solid #5e4428;
+  background: #dca85d;
+}
+
+.square {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  border: 1px solid #6d5030;
+  border-radius: 0;
+  background: #e8bd73;
+  color: #211a14;
+  font-weight: 700;
+}
+
+.selectedSquare {
+  background: #aed880 !important;
+  border-color: #3d7a30 !important;
+}
+
+.legalTarget {
+  background: #d4edb8 !important;
+  cursor: pointer;
+}
+
+.legalTarget::after {
+  content: "";
+  display: block;
+  width: 32%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: rgba(40, 120, 40, 0.4);
+  position: absolute;
+}
+
+.pieceLabel {
+  display: grid;
+  width: 76%;
+  height: 76%;
+  place-items: center;
+  border: 1px solid #6f5c2c;
+  background: #f7df9f;
+  clip-path: polygon(50% 0%, 88% 22%, 78% 100%, 22% 100%, 12% 22%);
+  font-size: clamp(15px, 3.2vw, 30px);
+  line-height: 1;
+}
+
+.whitePiece {
+  transform: rotate(180deg);
+}
+
+.sfenLine {
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+  color: #4e5a4b;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 13px;
+}
+
+.sidePanel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.panelSection {
+  border: 1px solid #d1d8c9;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 14px;
+}
+
+.panelSection h2,
+.logArea h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+
+.playerSetup {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.playerRow {
+  display: grid;
+  grid-template-columns: 2.5em 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+}
+
+.playerSideLabel {
+  color: #4f5949;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.playerRow select,
+.playerRow input {
+  min-width: 0;
+  border: 1px solid #aeb6a7;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 13px;
+}
+
+.enginePathRow {
+  display: grid;
+  grid-template-columns: 2.5em 1fr;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.enginePathInput {
+  min-width: 0;
+  border: 1px solid #aeb6a7;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-family: "Cascadia Mono", Consolas, monospace;
+}
+
+.depthRow {
+  display: grid;
+  grid-template-columns: 2.5em 1fr;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+  padding-left: 0;
+}
+
+.depthLabel {
+  color: #4f5949;
+  font-size: 12px;
+  text-align: right;
+}
+
+.depthRow select {
+  min-width: 0;
+  border: 1px solid #aeb6a7;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 12px;
+}
+
+.stepModeLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #4f5949;
+  cursor: pointer;
+}
+
+.stepModeLabel input[type="checkbox"] {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+}
+
+.humanTurnBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  min-height: 36px;
+  border-radius: 6px;
+  background: #e8f5e0;
+  border: 1px solid #7ab06a;
+  color: #2a5220;
+  font-size: 13px;
+}
+
+.aiThinkingBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  min-height: 36px;
+  border-radius: 6px;
+  background: #f5f0ff;
+  border: 1px solid #9f8fc0;
+  color: #4a3a70;
+  font-size: 13px;
+  animation: checkedPulse 1s ease-in-out infinite;
+}
+
+.agentWarning {
+  margin: 8px 0 0;
+  color: #7a5800;
+  font-size: 12px;
+}
+
+.agentWarning code {
+  background: #f5f0e0;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-family: "Cascadia Mono", Consolas, monospace;
+}
+
+.buttonRow,
+.archiveControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.moveForm {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.archiveDownloads {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.archiveDownloads a {
+  padding: 4px 10px;
+  border: 1px solid #aeb6a7;
+  border-radius: 6px;
+  font-size: 12px;
+  text-decoration: none;
+  color: #3a5230;
+  background: #f0ede6;
+}
+
+.archiveDownloads a:hover {
+  background: #e0ddd6;
+}
+
+.moveForm input,
+.archiveControls select {
+  min-width: 0;
+  border: 1px solid #aeb6a7;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.replayMeta {
+  margin-top: 6px;
+  color: #5a6257;
+}
+
+.legalMoves {
+  display: flex;
+  max-height: 150px;
+  overflow: auto;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.legalMoves button {
+  min-height: 30px;
+  padding: 2px 8px;
+  font-family: "Cascadia Mono", Consolas, monospace;
+}
+
+.logArea {
+  margin-top: 20px;
+  border-top: 1px solid #d4d8cc;
+  padding-top: 16px;
+}
+
+.moveLog {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.moveEntry {
+  border: 1px solid #d5dacd;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.moveEntryHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.moveReason {
+  margin-top: 6px;
+  color: #353b33;
+}
+
+.candidateLine,
+.emptyText {
+  margin-top: 6px;
+  color: #657060;
+  font-size: 13px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .appShell {
+    padding: 14px;
+  }
+
+  .topBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .board {
+    width: min(94vw, 680px);
+  }
+}
+
+@media (max-width: 520px) {
+  .hands {
+    grid-template-columns: 1fr;
+  }
+
+  .moveLog {
+    grid-template-columns: 1fr;
+  }
+}
