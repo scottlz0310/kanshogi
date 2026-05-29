@@ -18,6 +18,10 @@
 
 ### Changed
 
+- USI エンジン接続を深層学習系エンジン（ふかうら王 / dlshogi 等）に対応
+  - 子プロセスの `cwd` を実行ファイルのディレクトリに固定（`eval/eval_options.txt` 等の相対参照を解決可能に）
+  - `isready` のタイムアウトを 15 秒から 10 分へ拡張（初回 TRT/ONNX エンジンビルドを許容）
+  - `info string` および stderr 出力をサーバーログに転送（初期化・推論進捗の可視化）
 - パッケージマネージャを npm から pnpm へ移行
   - `package.json` の `packageManager` を `pnpm@11.1.3` に固定
   - `package-lock.json` を削除し `pnpm-lock.yaml` を生成

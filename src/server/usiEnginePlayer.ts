@@ -1,4 +1,5 @@
 import { type ChildProcess, spawn } from "node:child_process";
+import { dirname } from "node:path";
 import { createInterface } from "node:readline";
 import type { GameState, MoveRequest } from "../shared/types.js";
 import type { AiPlayer } from "./aiPlayer.js";
@@ -107,13 +108,32 @@ export class UsiEnginePlayer implements AiPlayer {
   }
 
   private async start(): Promise<void> {
-    const proc = spawn(this.enginePath, [], { stdio: ["pipe", "pipe", "pipe"] });
+    // exe と同階層の eval/eval_options.txt 等を解決させるため cwd を exe ディレクトリに固定
+    const proc = spawn(this.enginePath, [], {
+      stdio: ["pipe", "pipe", "pipe"],
+      cwd: dirname(this.enginePath),
+    });
     this.proc = proc;
 
+    let onError: ((err: Error) => void) | undefined;
+    let onExit: ((code: number | null, signal: NodeJS.Signals | null) => void) | undefined;
+
     const errorPromise = new Promise<never>((_, reject) => {
-      proc.on("error", (err) => {
+      onError = (err) => {
         reject(new Error(`USIエンジンの起動に失敗しました: ${err.message}`));
-      });
+      };
+      proc.on("error", onError);
+    });
+    // モデル読込失敗等で readyok 前にエンジンが終了した場合、長時間 timeout を待たず即 reject する
+    const exitPromise = new Promise<never>((_, reject) => {
+      onExit = (code, signal) => {
+        reject(
+          new Error(
+            `USIエンジンが起動完了前に終了しました (code=${code ?? "null"}, signal=${signal ?? "null"})`,
+          ),
+        );
+      };
+      proc.once("exit", onExit);
     });
 
     if (!proc.stdout) {
@@ -123,17 +143,35 @@ export class UsiEnginePlayer implements AiPlayer {
     rl.on("line", (line) => {
       const trimmed = line.trim();
       if (trimmed) {
+        if (trimmed.startsWith("info string")) {
+          console.error(`[${this.name}] ${trimmed}`);
+        }
         for (const h of this.lineHandlers) h(trimmed);
       }
     });
+    if (proc.stderr) {
+      const errRl = createInterface({ input: proc.stderr });
+      errRl.on("line", (line) => {
+        const trimmed = line.trim();
+        if (trimmed) console.error(`[${this.name}] ${trimmed}`);
+      });
+    }
 
-    await Promise.race([
-      (async () => {
-        await this.collect("usi", (l) => l === "usiok", 5000);
-        await this.collect("isready", (l) => l === "readyok", 15000);
-      })(),
-      errorPromise,
-    ]);
+    try {
+      await Promise.race([
+        (async () => {
+          await this.collect("usi", (l) => l === "usiok", 5000);
+          // 深層学習エンジンの初回 TRT/ONNX ビルドで数分かかるため長めに確保
+          await this.collect("isready", (l) => l === "readyok", 600000);
+        })(),
+        errorPromise,
+        exitPromise,
+      ]);
+    } finally {
+      // 起動専用ハンドラを剥がし、後続の close() による正常終了時に reject が走らないようにする
+      if (onError) proc.off("error", onError);
+      if (onExit) proc.off("exit", onExit);
+    }
   }
 
   private send(cmd: string): void {
