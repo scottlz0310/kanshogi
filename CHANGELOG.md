@@ -11,7 +11,8 @@
 - 開発環境ツールチェーンを整備
   - Biome を導入（lint + format）。`biome.json` と scripts `lint`/`format`/`check` を追加
   - lefthook を導入。pre-commit で `biome check`、pre-push で `typecheck` + `test`
-  - GitHub Actions CI（lint / typecheck / test / build、Node 26）を追加
+  - GitHub Actions CI（lint / typecheck / coverage / build、Node 26）を追加
+  - Codecov 連携を追加（vitest v8 カバレッジを `codecov/codecov-action@v5` でアップロード。`codecov.yml`・README バッジ）
   - Renovate 設定（`renovate.json`、共有プリセット `scottlz0310/renovate-config` を拡張）を追加
   - `.node-version`(26.2.0)・`engines`・`.editorconfig`・`.gitattributes` を追加
 

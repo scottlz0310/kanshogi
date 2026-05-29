@@ -1,5 +1,8 @@
 # AI将棋観戦
 
+[![CI](https://github.com/scottlz0310/kanshogi/actions/workflows/ci.yml/badge.svg)](https://github.com/scottlz0310/kanshogi/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/scottlz0310/kanshogi/branch/main/graph/badge.svg)](https://codecov.io/gh/scottlz0310/kanshogi)
+
 AI同士の将棋対局を観戦し、思考プロセスを可視化するローカルWebアプリ。人間がAIと対局することもできる。
 
 ## 差別化ポイント

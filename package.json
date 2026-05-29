@@ -13,6 +13,7 @@
     "build": "tsc && vite build",
     "start": "tsx src/server/server.ts",
     "test": "vitest run",
+    "coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint .",
     "format": "biome format --write .",
@@ -47,6 +48,7 @@
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "^4.1.7",
     "lefthook": "^2.1.8",
     "vitest": "^4.1.7"
   }
