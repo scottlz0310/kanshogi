@@ -1,5 +1,5 @@
-import type { GameState } from "../shared/types.js";
 import { OllamaAiPlayer } from "../server/ollamaAiPlayer.js";
+import type { GameState } from "../shared/types.js";
 
 const GAME_SERVER = process.env.GAME_SERVER ?? "http://localhost:3030";
 const OLLAMA_BASE = process.env.OLLAMA_SERVER ?? "http://localhost:11434";
@@ -29,7 +29,9 @@ async function main(): Promise<void> {
   const { side, agentName } = parseArgs();
   const player = new OllamaAiPlayer(agentName, OLLAMA_BASE, MODEL);
 
-  console.log(`[${agentName}] 起動 (${side === "black" ? "先手" : "後手"}) | サーバー: ${GAME_SERVER} | モデル: ${MODEL}`);
+  console.log(
+    `[${agentName}] 起動 (${side === "black" ? "先手" : "後手"}) | サーバー: ${GAME_SERVER} | モデル: ${MODEL}`,
+  );
 
   while (true) {
     let state: GameState;
@@ -47,8 +49,7 @@ async function main(): Promise<void> {
       break;
     }
 
-    const canMove =
-      (state.status === "playing" || state.status === "ready") && state.turn === side;
+    const canMove = (state.status === "playing" || state.status === "ready") && state.turn === side;
 
     if (!canMove) {
       await sleep(POLL_MS);
@@ -62,7 +63,7 @@ async function main(): Promise<void> {
       const res = await fetch(`${GAME_SERVER}/api/move`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(request)
+        body: JSON.stringify(request),
       });
 
       if (!res.ok) {

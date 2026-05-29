@@ -16,7 +16,7 @@ export class OllamaAiPlayer implements AiPlayer {
   constructor(
     public readonly name: string,
     private readonly baseUrl: string = "http://localhost:11434",
-    private readonly model: string = "gemma4"
+    private readonly model: string = "gemma4",
   ) {}
 
   async chooseMove(state: GameState): Promise<MoveRequest> {
@@ -27,8 +27,8 @@ export class OllamaAiPlayer implements AiPlayer {
         agentName: this.name,
         reason: `${this.name}: ${decision.reason}`,
         candidates: decision.candidates,
-        evaluation: decision.evaluation
-      }
+        evaluation: decision.evaluation,
+      },
     };
   }
 
@@ -70,8 +70,8 @@ evaluationの値は「互角」「わずかに有利」「やや有利」「や�
         prompt,
         stream: false,
         format: "json",
-        options: { temperature: 0.3 }
-      })
+        options: { temperature: 0.3 },
+      }),
     });
 
     if (!res.ok) {
@@ -96,12 +96,14 @@ evaluationの値は「互角」「わずかに有利」「やや有利」「や�
         : state.legalMoves[0];
 
     if (chosenUsi !== decision.usi) {
-      console.warn(`[${this.name}] 選択手 "${decision.usi}" が合法手外のためフォールバック: ${chosenUsi}`);
+      console.warn(
+        `[${this.name}] 選択手 "${decision.usi}" が合法手外のためフォールバック: ${chosenUsi}`,
+      );
     }
 
     const rawCandidates = Array.isArray(decision.candidates) ? decision.candidates : [];
     const validCandidates = rawCandidates.filter(
-      (m): m is string => typeof m === "string" && state.legalMoves.includes(m)
+      (m): m is string => typeof m === "string" && state.legalMoves.includes(m),
     );
     if (!validCandidates.includes(chosenUsi)) {
       validCandidates.unshift(chosenUsi);
@@ -111,7 +113,7 @@ evaluationの値は「互角」「わずかに有利」「やや有利」「や�
       usi: chosenUsi,
       reason: typeof decision.reason === "string" ? decision.reason : "AIが選択",
       candidates: validCandidates.slice(0, 5),
-      evaluation: typeof decision.evaluation === "string" ? decision.evaluation : "互角"
+      evaluation: typeof decision.evaluation === "string" ? decision.evaluation : "互角",
     };
   }
 }

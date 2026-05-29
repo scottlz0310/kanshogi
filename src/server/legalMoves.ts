@@ -1,11 +1,11 @@
 import {
   Color,
-  ImmutablePosition,
-  Move,
-  PieceType,
-  Square,
   handPieceTypes,
-  isPromotableRank
+  type ImmutablePosition,
+  isPromotableRank,
+  type Move,
+  type PieceType,
+  Square,
 } from "tsshogi";
 
 export type LegalMoveCandidate = {
@@ -16,7 +16,7 @@ export type LegalMoveCandidate = {
 function addCandidate(
   candidates: Map<string, LegalMoveCandidate>,
   position: ImmutablePosition,
-  move: Move | null
+  move: Move | null,
 ): void {
   if (!move || !position.isValidMove(move)) {
     return;
@@ -24,7 +24,7 @@ function addCandidate(
 
   candidates.set(move.usi, {
     usi: move.usi,
-    move
+    move,
   });
 }
 

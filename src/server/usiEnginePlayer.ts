@@ -1,5 +1,5 @@
+import { type ChildProcess, spawn } from "node:child_process";
 import { createInterface } from "node:readline";
-import { spawn, type ChildProcess } from "node:child_process";
 import type { GameState, MoveRequest } from "../shared/types.js";
 import type { AiPlayer } from "./aiPlayer.js";
 
@@ -40,7 +40,7 @@ export class UsiEnginePlayer implements AiPlayer {
   constructor(
     public readonly name: string,
     private readonly enginePath: string,
-    private readonly moveTimeMs: number = 3000
+    private readonly moveTimeMs: number = 3000,
   ) {}
 
   async chooseMove(state: GameState): Promise<MoveRequest> {
@@ -53,7 +53,7 @@ export class UsiEnginePlayer implements AiPlayer {
     const lines = await this.collect(
       `go movetime ${this.moveTimeMs}`,
       (l) => l.startsWith("bestmove"),
-      this.moveTimeMs + 5000
+      this.moveTimeMs + 5000,
     );
 
     // depth最大のinfo行を採用
@@ -89,8 +89,8 @@ export class UsiEnginePlayer implements AiPlayer {
         agentName: this.name,
         reason: `${this.name}: ${parts.join("、")}で ${usi} を選択`,
         candidates: pvCandidates.slice(0, 5),
-        evaluation: cpToEvalText(scoreCp)
-      }
+        evaluation: cpToEvalText(scoreCp),
+      },
     };
   }
 
@@ -116,7 +116,10 @@ export class UsiEnginePlayer implements AiPlayer {
       });
     });
 
-    const rl = createInterface({ input: proc.stdout! });
+    if (!proc.stdout) {
+      throw new Error("USIエンジンの標準出力を取得できませんでした");
+    }
+    const rl = createInterface({ input: proc.stdout });
     rl.on("line", (line) => {
       const trimmed = line.trim();
       if (trimmed) {
@@ -129,7 +132,7 @@ export class UsiEnginePlayer implements AiPlayer {
         await this.collect("usi", (l) => l === "usiok", 5000);
         await this.collect("isready", (l) => l === "readyok", 15000);
       })(),
-      errorPromise
+      errorPromise,
     ]);
   }
 
@@ -140,7 +143,7 @@ export class UsiEnginePlayer implements AiPlayer {
   private collect(
     cmd: string,
     done: (line: string) => boolean,
-    timeoutMs: number
+    timeoutMs: number,
   ): Promise<string[]> {
     return new Promise((resolve, reject) => {
       const collected: string[] = [];

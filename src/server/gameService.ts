@@ -7,7 +7,7 @@ import type {
   MoveLogEntry,
   MoveRequest,
   Players,
-  ReplaySnapshot
+  ReplaySnapshot,
 } from "../shared/types";
 import { manualThought } from "./ai";
 import type { AiPlayer } from "./aiPlayer";
@@ -90,7 +90,7 @@ export class GameService {
       turnStartedAt: this.turnStartedAt.toISOString(),
       clockMs: { ...this.clockMs },
       finishedReason: this.finishedReason,
-      maxPly: this.maxPly
+      maxPly: this.maxPly,
     };
   }
 
@@ -133,7 +133,7 @@ export class GameService {
       reason: thought.reason,
       candidates: thought.candidates,
       evaluation: thought.evaluation,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     this.log.push(entry);
@@ -146,7 +146,10 @@ export class GameService {
     return this.getState();
   }
 
-  startAi(players: { black: AiPlayer | null; white: AiPlayer | null }, stepMode = false): GameState {
+  startAi(
+    players: { black: AiPlayer | null; white: AiPlayer | null },
+    stepMode = false,
+  ): GameState {
     if (this.status === "finished") {
       throw new Error("終了済みの対局ではAI対局を開始できません。新規対局を開始してください");
     }
@@ -164,7 +167,9 @@ export class GameService {
     }
 
     if (!stepMode) {
-      this.aiIntervalId = setInterval(() => { void this.playOneAiMove(); }, aiIntervalMs);
+      this.aiIntervalId = setInterval(() => {
+        void this.playOneAiMove();
+      }, aiIntervalMs);
       void this.playOneAiMove();
     }
 
@@ -201,7 +206,9 @@ export class GameService {
       }
     } else {
       if (!this.aiIntervalId) {
-        this.aiIntervalId = setInterval(() => { void this.playOneAiMove(); }, aiIntervalMs);
+        this.aiIntervalId = setInterval(() => {
+          void this.playOneAiMove();
+        }, aiIntervalMs);
         void this.playOneAiMove();
       }
     }
@@ -322,7 +329,7 @@ export class GameService {
     const white = this.log.find((e) => e.side === "white")?.agentName;
     return {
       ...(black ? { black } : {}),
-      ...(white ? { white } : {})
+      ...(white ? { white } : {}),
     };
   }
 
@@ -338,13 +345,14 @@ export class GameService {
       initialSfen: InitialPositionSFEN.STANDARD,
       log: this.log,
       snapshots: this.snapshots,
-      finishedReason: this.finishedReason
+      finishedReason: this.finishedReason,
     };
   }
 
   private currentPlayerIsHuman(): boolean {
     if (!this.aiPlaying || !this.players) return true;
-    const player = this.record.position.color === Color.BLACK ? this.players.black : this.players.white;
+    const player =
+      this.record.position.color === Color.BLACK ? this.players.black : this.players.white;
     return player === null;
   }
 

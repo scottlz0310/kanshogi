@@ -1,11 +1,11 @@
 import {
   Color,
-  ImmutablePosition,
-  Move,
+  handPieceTypes,
+  type ImmutablePosition,
+  type Move,
   PieceType,
-  Position,
+  type Position,
   Square,
-  handPieceTypes
 } from "tsshogi";
 import type { ThoughtSummary } from "../shared/types";
 import type { LegalMoveCandidate } from "./legalMoves";
@@ -25,7 +25,7 @@ const pieceValues: Record<PieceType, number> = {
   [PieceType.PROM_KNIGHT]: 6,
   [PieceType.PROM_SILVER]: 6,
   [PieceType.HORSE]: 12,
-  [PieceType.DRAGON]: 14
+  [PieceType.DRAGON]: 14,
 };
 
 type ScoredMove = LegalMoveCandidate & {
@@ -61,7 +61,7 @@ function scoreMove(position: ImmutablePosition, candidate: LegalMoveCandidate): 
   return {
     ...candidate,
     givesCheck,
-    score: captureScore + promotionScore + checkScore + developmentScore - centerDistance * 0.1
+    score: captureScore + promotionScore + checkScore + developmentScore - centerDistance * 0.1,
   };
 }
 
@@ -92,7 +92,7 @@ function alphaBeta(
   depth: number,
   alpha: number,
   beta: number,
-  maximizing: boolean
+  maximizing: boolean,
 ): number {
   if (depth === 0) return evaluatePosition(position);
 
@@ -131,12 +131,7 @@ function sideName(color: Color): string {
   return color === Color.BLACK ? "先手AI" : "後手AI";
 }
 
-function buildReason(
-  position: ImmutablePosition,
-  best: ScoredMove,
-  name: string,
-  depth: number
-): string {
+function buildReason(best: ScoredMove, name: string, depth: number): string {
   const parts: string[] = [];
 
   if (depth > 1) {
@@ -176,7 +171,7 @@ export function chooseAiMove(
   position: ImmutablePosition,
   legalMoves: LegalMoveCandidate[],
   playerName?: string,
-  depth = 1
+  depth = 1,
 ): AiDecision | null {
   if (legalMoves.length === 0) {
     return null;
@@ -194,9 +189,9 @@ export function chooseAiMove(
     return {
       usi: best.usi,
       agentName: name,
-      reason: buildReason(position, best, name, 1),
+      reason: buildReason(best, name, 1),
       candidates,
-      evaluation: evaluationText(best.score)
+      evaluation: evaluationText(best.score),
     };
   }
 
@@ -229,9 +224,9 @@ export function chooseAiMove(
   return {
     usi: bestCandidate.usi,
     agentName: name,
-    reason: buildReason(position, scoredBest, name, depth),
+    reason: buildReason(scoredBest, name, depth),
     candidates: ordered.slice(0, 5).map((c) => c.usi),
-    evaluation: minimaxEvalText(relScore)
+    evaluation: minimaxEvalText(relScore),
   };
 }
 
@@ -239,6 +234,6 @@ export function manualThought(usi: string): ThoughtSummary {
   return {
     reason: `観戦者または外部エージェントが ${usi} を入力`,
     candidates: [usi],
-    evaluation: "未評価"
+    evaluation: "未評価",
   };
 }

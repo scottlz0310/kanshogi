@@ -3,9 +3,10 @@ import { describe, expect, it } from "vitest";
 // ollama応答のJSON解析ロジックを単体でテストする
 function parseOllamaResponse(
   raw: string,
-  legalMoves: string[]
+  legalMoves: string[],
 ): { usi: string; reason: string; candidates: string[]; evaluation: string } {
-  let decision: Partial<{ usi: string; reason: string; candidates: string[]; evaluation: string }> = {};
+  let decision: Partial<{ usi: string; reason: string; candidates: string[]; evaluation: string }> =
+    {};
   try {
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     const jsonStr = jsonMatch ? jsonMatch[0] : raw;
@@ -21,7 +22,7 @@ function parseOllamaResponse(
 
   const rawCandidates = Array.isArray(decision.candidates) ? decision.candidates : [];
   const validCandidates = rawCandidates.filter(
-    (m): m is string => typeof m === "string" && legalMoves.includes(m)
+    (m): m is string => typeof m === "string" && legalMoves.includes(m),
   );
   if (!validCandidates.includes(chosenUsi)) {
     validCandidates.unshift(chosenUsi);
@@ -31,7 +32,7 @@ function parseOllamaResponse(
     usi: chosenUsi,
     reason: typeof decision.reason === "string" ? decision.reason : "AIが選択",
     candidates: validCandidates.slice(0, 5),
-    evaluation: typeof decision.evaluation === "string" ? decision.evaluation : "互角"
+    evaluation: typeof decision.evaluation === "string" ? decision.evaluation : "互角",
   };
 }
 
@@ -43,7 +44,7 @@ describe("parseOllamaResponse", () => {
       usi: "7g7f",
       reason: "飛車先を開ける",
       candidates: ["7g7f", "2g2f"],
-      evaluation: "互角"
+      evaluation: "互角",
     });
     const result = parseOllamaResponse(raw, legalMoves);
     expect(result.usi).toBe("7g7f");
@@ -75,7 +76,7 @@ describe("parseOllamaResponse", () => {
       usi: "7g7f",
       reason: "定跡手",
       candidates: ["7g7f", "9z9z", "illegal"],
-      evaluation: "互角"
+      evaluation: "互角",
     });
     const result = parseOllamaResponse(raw, legalMoves);
     expect(result.candidates.every((m) => legalMoves.includes(m))).toBe(true);

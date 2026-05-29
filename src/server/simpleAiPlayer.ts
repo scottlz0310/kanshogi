@@ -7,7 +7,7 @@ import { generateLegalMoves } from "./legalMoves.js";
 export class SimpleAiPlayer implements AiPlayer {
   constructor(
     public readonly name: string,
-    private readonly depth: number = 1
+    private readonly depth: number = 1,
   ) {}
 
   async chooseMove(state: GameState): Promise<MoveRequest> {
@@ -26,8 +26,8 @@ export class SimpleAiPlayer implements AiPlayer {
         agentName: this.name,
         reason: decision.reason,
         candidates: decision.candidates,
-        evaluation: decision.evaluation
-      }
+        evaluation: decision.evaluation,
+      },
     };
   }
 }

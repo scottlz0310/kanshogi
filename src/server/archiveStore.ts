@@ -37,7 +37,7 @@ export class ArchiveStore {
       type: "game_start",
       id: archive.id,
       startedAt: archive.startedAt,
-      initialSfen: archive.initialSfen
+      initialSfen: archive.initialSfen,
     };
 
     fs.writeFileSync(file, `${JSON.stringify(meta)}\n`, fileEncoding);
@@ -55,7 +55,7 @@ export class ArchiveStore {
         moves: log.length,
         status,
         players: players ?? {},
-        finishedReason: finishedReason ?? null
+        finishedReason: finishedReason ?? null,
       }))
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
@@ -70,7 +70,7 @@ export class ArchiveStore {
         version: raw.version ?? 0,
         players: raw.players ?? {},
         finishedReason: raw.finishedReason ?? null,
-        ...raw
+        ...raw,
       } as GameArchive;
     } catch (error) {
       throw new Error(`棋譜ファイルを読み込めません: ${file}`, { cause: error });

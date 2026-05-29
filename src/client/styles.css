@@ -1,11 +1,7 @@
 :root {
   color: #20242a;
   background: #f5f6f0;
-  font-family:
-    "Yu Gothic UI",
-    "Meiryo",
-    system-ui,
-    sans-serif;
+  font-family: "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
 }
 
 * {
@@ -88,7 +84,7 @@ input:disabled {
 }
 
 .dangerText {
-  border-color: #b54a3b !important;
+  border-color: #b54a3b;
   color: #9d3428;
 }
 
@@ -105,8 +101,13 @@ input:disabled {
 }
 
 @keyframes checkedPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .finishedBanner {
@@ -210,8 +211,8 @@ input:disabled {
 }
 
 .handPieceSelected {
-  background: #aed880 !important;
-  border-color: #3d7a30 !important;
+  background: #aed880;
+  border-color: #3d7a30;
 }
 
 .promoOverlay {
@@ -235,6 +236,13 @@ input:disabled {
   margin: 0 0 18px;
   font-size: 20px;
   font-weight: bold;
+}
+
+.buttonRow,
+.archiveControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .promoDialog .buttonRow {
@@ -271,13 +279,19 @@ input:disabled {
 }
 
 .selectedSquare {
-  background: #aed880 !important;
-  border-color: #3d7a30 !important;
+  background: #aed880;
+  border-color: #3d7a30;
 }
 
 .legalTarget {
-  background: #d4edb8 !important;
+  background: #d4edb8;
   cursor: pointer;
+}
+
+/* hover 時も選択・選択中持ち駒の枠色を維持する（button:hover:not(:disabled) より高い specificity で !important を回避） */
+.selectedSquare:hover:not(:disabled),
+.handPieceSelected:hover:not(:disabled) {
+  border-color: #3d7a30;
 }
 
 .legalTarget::after {
@@ -453,13 +467,6 @@ input:disabled {
   border-radius: 3px;
   padding: 1px 4px;
   font-family: "Cascadia Mono", Consolas, monospace;
-}
-
-.buttonRow,
-.archiveControls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .moveForm {

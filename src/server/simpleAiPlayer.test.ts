@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest";
 import { InitialPositionSFEN } from "tsshogi";
+import { describe, expect, test } from "vitest";
 import type { GameState } from "../shared/types";
 import { SimpleAiPlayer } from "./simpleAiPlayer";
 
@@ -24,7 +24,7 @@ function makeState(sfen: string = InitialPositionSFEN.STANDARD): GameState {
     turnStartedAt: new Date().toISOString(),
     clockMs: { black: 0, white: 0 },
     finishedReason: null,
-    maxPly: 200
+    maxPly: 200,
   };
 }
 
@@ -62,6 +62,6 @@ describe("SimpleAiPlayer", () => {
     const player = new SimpleAiPlayer("テストAI");
     const result = await player.chooseMove(makeState());
 
-    expect(result.thought!.candidates.length).toBeLessThanOrEqual(5);
+    expect(result.thought?.candidates.length).toBeLessThanOrEqual(5);
   });
 });

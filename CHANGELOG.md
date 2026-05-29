@@ -6,6 +6,16 @@
 
 ## [Unreleased]
 
+### Added
+
+- 開発環境ツールチェーンを整備
+  - Biome を導入（lint + format）。`biome.json` と scripts `lint`/`format`/`check` を追加
+  - lefthook を導入。pre-commit で `biome check`、pre-push で `typecheck` + `test`
+  - GitHub Actions CI（lint / typecheck / coverage / build、Node 26）を追加
+  - Codecov 連携を追加（vitest v8 カバレッジを `codecov/codecov-action@v5` でアップロード。`codecov.yml`・README バッジ）
+  - Renovate 設定（`renovate.json`、共有プリセット `scottlz0310/renovate-config` を拡張）を追加
+  - `.node-version`(26.2.0)・`engines`・`.editorconfig`・`.gitattributes` を追加
+
 ### Changed
 
 - パッケージマネージャを npm から pnpm へ移行
@@ -13,6 +23,10 @@
   - `package-lock.json` を削除し `pnpm-lock.yaml` を生成
   - `pnpm-workspace.yaml` を追加し、esbuild のビルドスクリプト実行を許可
   - README・`docs/04-agent-contract.md`・UI 文言中の `npm` コマンドを `pnpm` に置換
+- 既存コードを Biome ルールに準拠
+  - React hook 依存を `useCallback`/`useRef` で適正化（マウント時ロード・ポーリングの挙動は不変）
+  - CSS の `!important` 除去・セレクタ特異性の修正
+  - 未使用引数の削除・non-null assertion の除去
 
 ## [0.1.0] - 2026-05-26
 
