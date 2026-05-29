@@ -1,4 +1,5 @@
 import { type ChildProcess, spawn } from "node:child_process";
+import { dirname } from "node:path";
 import { createInterface } from "node:readline";
 import type { GameState, MoveRequest } from "../shared/types.js";
 import type { AiPlayer } from "./aiPlayer.js";
@@ -107,7 +108,11 @@ export class UsiEnginePlayer implements AiPlayer {
   }
 
   private async start(): Promise<void> {
-    const proc = spawn(this.enginePath, [], { stdio: ["pipe", "pipe", "pipe"] });
+    // exe と同階層の eval/eval_options.txt 等を解決させるため cwd を exe ディレクトリに固定
+    const proc = spawn(this.enginePath, [], {
+      stdio: ["pipe", "pipe", "pipe"],
+      cwd: dirname(this.enginePath),
+    });
     this.proc = proc;
 
     const errorPromise = new Promise<never>((_, reject) => {
@@ -123,14 +128,25 @@ export class UsiEnginePlayer implements AiPlayer {
     rl.on("line", (line) => {
       const trimmed = line.trim();
       if (trimmed) {
+        if (trimmed.startsWith("info string")) {
+          console.error(`[${this.name}] ${trimmed}`);
+        }
         for (const h of this.lineHandlers) h(trimmed);
       }
     });
+    if (proc.stderr) {
+      const errRl = createInterface({ input: proc.stderr });
+      errRl.on("line", (line) => {
+        const trimmed = line.trim();
+        if (trimmed) console.error(`[${this.name}] ${trimmed}`);
+      });
+    }
 
     await Promise.race([
       (async () => {
         await this.collect("usi", (l) => l === "usiok", 5000);
-        await this.collect("isready", (l) => l === "readyok", 15000);
+        // 深層学習エンジンの初回 TRT/ONNX ビルドで数分かかるため長めに確保
+        await this.collect("isready", (l) => l === "readyok", 600000);
       })(),
       errorPromise,
     ]);
