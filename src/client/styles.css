@@ -288,6 +288,12 @@ input:disabled {
   cursor: pointer;
 }
 
+/* hover 時も選択・選択中持ち駒の枠色を維持する（button:hover:not(:disabled) より高い specificity で !important を回避） */
+.selectedSquare:hover:not(:disabled),
+.handPieceSelected:hover:not(:disabled) {
+  border-color: #3d7a30;
+}
+
 .legalTarget::after {
   content: "";
   display: block;
