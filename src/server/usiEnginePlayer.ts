@@ -115,10 +115,25 @@ export class UsiEnginePlayer implements AiPlayer {
     });
     this.proc = proc;
 
+    let onError: ((err: Error) => void) | undefined;
+    let onExit: ((code: number | null, signal: NodeJS.Signals | null) => void) | undefined;
+
     const errorPromise = new Promise<never>((_, reject) => {
-      proc.on("error", (err) => {
+      onError = (err) => {
         reject(new Error(`USIエンジンの起動に失敗しました: ${err.message}`));
-      });
+      };
+      proc.on("error", onError);
+    });
+    // モデル読込失敗等で readyok 前にエンジンが終了した場合、長時間 timeout を待たず即 reject する
+    const exitPromise = new Promise<never>((_, reject) => {
+      onExit = (code, signal) => {
+        reject(
+          new Error(
+            `USIエンジンが起動完了前に終了しました (code=${code ?? "null"}, signal=${signal ?? "null"})`,
+          ),
+        );
+      };
+      proc.once("exit", onExit);
     });
 
     if (!proc.stdout) {
@@ -142,14 +157,21 @@ export class UsiEnginePlayer implements AiPlayer {
       });
     }
 
-    await Promise.race([
-      (async () => {
-        await this.collect("usi", (l) => l === "usiok", 5000);
-        // 深層学習エンジンの初回 TRT/ONNX ビルドで数分かかるため長めに確保
-        await this.collect("isready", (l) => l === "readyok", 600000);
-      })(),
-      errorPromise,
-    ]);
+    try {
+      await Promise.race([
+        (async () => {
+          await this.collect("usi", (l) => l === "usiok", 5000);
+          // 深層学習エンジンの初回 TRT/ONNX ビルドで数分かかるため長めに確保
+          await this.collect("isready", (l) => l === "readyok", 600000);
+        })(),
+        errorPromise,
+        exitPromise,
+      ]);
+    } finally {
+      // 起動専用ハンドラを剥がし、後続の close() による正常終了時に reject が走らないようにする
+      if (onError) proc.off("error", onError);
+      if (onExit) proc.off("exit", onExit);
+    }
   }
 
   private send(cmd: string): void {
