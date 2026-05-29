@@ -679,7 +679,7 @@ export function App() {
               </button>
             </div>
             <p className="agentWarning">
-              ⚠ 外部エージェント(<code>npm run agents</code>)とAI開始の同時使用は非推奨です
+              ⚠ 外部エージェント(<code>pnpm agents</code>)とAI開始の同時使用は非推奨です
             </p>
 
             <form className="moveForm" onSubmit={submitMove}>
