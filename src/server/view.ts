@@ -1,10 +1,10 @@
 import {
   Color,
-  ImmutablePosition,
+  handPieceTypes,
+  type ImmutablePosition,
   PieceType,
   Square,
-  handPieceTypes,
-  standardPieceName
+  standardPieceName,
 } from "tsshogi";
 import type {
   BoardSquareView,
@@ -13,7 +13,7 @@ import type {
   HandsView,
   PieceView,
   ReplaySnapshot,
-  Side
+  Side,
 } from "../shared/types";
 
 const promotedTypes = new Set<PieceType>([
@@ -22,7 +22,7 @@ const promotedTypes = new Set<PieceType>([
   PieceType.PROM_KNIGHT,
   PieceType.PROM_SILVER,
   PieceType.HORSE,
-  PieceType.DRAGON
+  PieceType.DRAGON,
 ]);
 
 const handOrder = [
@@ -32,7 +32,7 @@ const handOrder = [
   PieceType.SILVER,
   PieceType.KNIGHT,
   PieceType.LANCE,
-  PieceType.PAWN
+  PieceType.PAWN,
 ];
 
 const DROP_USI: Partial<Record<PieceType, string>> = {
@@ -42,7 +42,7 @@ const DROP_USI: Partial<Record<PieceType, string>> = {
   [PieceType.SILVER]: "S",
   [PieceType.KNIGHT]: "N",
   [PieceType.LANCE]: "L",
-  [PieceType.PAWN]: "P"
+  [PieceType.PAWN]: "P",
 };
 
 export function sideFromColor(color: Color): Side {
@@ -59,7 +59,7 @@ function serializePiece(piece: { color: Color; type: PieceType; sfen: string }):
     type: piece.type,
     label: pieceLabel(piece.type),
     promoted: promotedTypes.has(piece.type),
-    sfen: piece.sfen
+    sfen: piece.sfen,
   };
 }
 
@@ -75,7 +75,7 @@ function serializeBoard(position: ImmutablePosition): BoardSquareView[] {
         file,
         rank,
         testId: `square-${file}-${rank}`,
-        piece: piece ? serializePiece(piece) : null
+        piece: piece ? serializePiece(piece) : null,
       });
     }
   }
@@ -93,7 +93,7 @@ function serializeHand(position: ImmutablePosition, color: Color): HandPieceView
       type,
       label: pieceLabel(type),
       count: hand.count(type),
-      dropUsi: DROP_USI[type] ?? ""
+      dropUsi: DROP_USI[type] ?? "",
     }))
     .filter((piece) => piece.count > 0);
 }
@@ -101,14 +101,14 @@ function serializeHand(position: ImmutablePosition, color: Color): HandPieceView
 function serializeHands(position: ImmutablePosition): HandsView {
   return {
     black: serializeHand(position, Color.BLACK),
-    white: serializeHand(position, Color.WHITE)
+    white: serializeHand(position, Color.WHITE),
   };
 }
 
 export function createSnapshot(
   position: ImmutablePosition,
   ply: number,
-  status: GameStatus
+  status: GameStatus,
 ): ReplaySnapshot {
   return {
     ply,
@@ -117,6 +117,6 @@ export function createSnapshot(
     sfen: position.getSFEN(ply + 1),
     board: serializeBoard(position),
     hands: serializeHands(position),
-    checked: position.checked
+    checked: position.checked,
   };
 }

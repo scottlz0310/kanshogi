@@ -1,6 +1,6 @@
-import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import express from "express";
 import type { MoveRequest } from "../shared/types";
 import { GameService } from "./gameService";
 import { archiveToCSA, archiveToKIF } from "./kif";
@@ -87,7 +87,7 @@ app.post("/api/ai/start", (request, response) => {
     const body = request.body as { black?: PlayerConfig; white?: PlayerConfig; stepMode?: boolean };
     const players = {
       black: buildPlayer(body.black, "先手AI"),
-      white: buildPlayer(body.white, "後手AI")
+      white: buildPlayer(body.white, "後手AI"),
     };
     response.json(service.startAi(players, body.stepMode ?? false));
   } catch (error) {

@@ -1,10 +1,10 @@
 import {
+  exportCSA,
+  exportKIF,
   InitialPositionSFEN,
   Position,
   Record,
   RecordMetadataKey,
-  exportCSA,
-  exportKIF
 } from "tsshogi";
 import type { GameArchive } from "../shared/types.js";
 
@@ -31,7 +31,7 @@ function buildRecord(archive: GameArchive): Record {
 
   record.metadata.setStandardMetadata(
     RecordMetadataKey.START_DATETIME,
-    toJstDateString(archive.startedAt)
+    toJstDateString(archive.startedAt),
   );
 
   if (archive.finishedReason) {

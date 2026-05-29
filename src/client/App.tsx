@@ -1,11 +1,11 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   GameArchive,
   GameArchiveSummary,
   GameState,
   MoveLogEntry,
   ReplaySnapshot,
-  Side
+  Side,
 } from "../shared/types";
 
 type ApiError = {
@@ -16,9 +16,9 @@ async function requestJson<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
-      ...(options?.headers ?? {})
+      ...(options?.headers ?? {}),
     },
-    ...options
+    ...options,
   });
 
   const data = (await response.json()) as unknown;
@@ -42,7 +42,7 @@ function formatDateTime(value: string): string {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit"
+    second: "2-digit",
   }).format(new Date(value));
 }
 
@@ -55,7 +55,7 @@ function statusLabel(status: GameState["status"]): string {
     ready: "開始前",
     playing: "対局中",
     paused: "一時停止",
-    finished: "終局"
+    finished: "終局",
   }[status];
 }
 
@@ -94,7 +94,7 @@ function Board({
   interactive,
   selectedSquareUSI,
   legalTargetUSIs,
-  onSquareClick
+  onSquareClick,
 }: {
   snapshot: ReplaySnapshot;
   interactive: boolean;
@@ -108,11 +108,7 @@ function Board({
         const sqUSI = squareUSI(square.file, square.rank);
         const isSelected = sqUSI === selectedSquareUSI;
         const isTarget = legalTargetUSIs.has(sqUSI);
-        const cls = [
-          "square",
-          isSelected ? "selectedSquare" : "",
-          isTarget ? "legalTarget" : ""
-        ]
+        const cls = ["square", isSelected ? "selectedSquare" : "", isTarget ? "legalTarget" : ""]
           .filter(Boolean)
           .join(" ");
 
@@ -127,9 +123,7 @@ function Board({
           >
             {square.piece ? (
               <span
-                className={
-                  square.piece.side === "white" ? "pieceLabel whitePiece" : "pieceLabel"
-                }
+                className={square.piece.side === "white" ? "pieceLabel whitePiece" : "pieceLabel"}
               >
                 {square.piece.label}
               </span>
@@ -148,7 +142,7 @@ function Hands({
   selectedHandDropUsi,
   onHandPieceClick,
   clockMs,
-  turnElapsedMs
+  turnElapsedMs,
 }: {
   snapshot: ReplaySnapshot;
   interactive: boolean;
@@ -163,39 +157,40 @@ function Hands({
       {(["white", "black"] as const).map((side) => {
         const accumulated = clockMs?.[side] ?? 0;
         const isActive = side === turn;
-        const displayMs = accumulated + (isActive && turnElapsedMs !== undefined ? turnElapsedMs : 0);
+        const displayMs =
+          accumulated + (isActive && turnElapsedMs !== undefined ? turnElapsedMs : 0);
         return (
-        <div className="hand" key={side}>
-          <div className="handTitle">
-            <span>{sideLabel(side)} 持ち駒</span>
-            {clockMs !== undefined ? (
-              <span className={`handClock${isActive ? " handClockActive" : ""}`}>
-                {formatMs(displayMs)}
-              </span>
-            ) : null}
+          <div className="hand" key={side}>
+            <div className="handTitle">
+              <span>{sideLabel(side)} 持ち駒</span>
+              {clockMs !== undefined ? (
+                <span className={`handClock${isActive ? " handClockActive" : ""}`}>
+                  {formatMs(displayMs)}
+                </span>
+              ) : null}
+            </div>
+            <div className="handPieces">
+              {snapshot.hands[side].length === 0 ? (
+                <span className="emptyText">なし</span>
+              ) : (
+                snapshot.hands[side].map((piece) => {
+                  const isClickable = interactive && side === turn;
+                  const isSelected = piece.dropUsi === selectedHandDropUsi;
+                  return (
+                    <button
+                      className={`handPiece${isSelected ? " handPieceSelected" : ""}`}
+                      disabled={!isClickable}
+                      key={`${side}-${piece.type}`}
+                      onClick={isClickable ? () => onHandPieceClick(piece.dropUsi) : undefined}
+                      type="button"
+                    >
+                      {piece.label}×{piece.count}
+                    </button>
+                  );
+                })
+              )}
+            </div>
           </div>
-          <div className="handPieces">
-            {snapshot.hands[side].length === 0 ? (
-              <span className="emptyText">なし</span>
-            ) : (
-              snapshot.hands[side].map((piece) => {
-                const isClickable = interactive && side === turn;
-                const isSelected = piece.dropUsi === selectedHandDropUsi;
-                return (
-                  <button
-                    className={`handPiece${isSelected ? " handPieceSelected" : ""}`}
-                    disabled={!isClickable}
-                    key={`${side}-${piece.type}`}
-                    onClick={isClickable ? () => onHandPieceClick(piece.dropUsi) : undefined}
-                    type="button"
-                  >
-                    {piece.label}×{piece.count}
-                  </button>
-                );
-              })
-            )}
-          </div>
-        </div>
         );
       })}
     </div>
@@ -252,7 +247,7 @@ type PlayerConfig = { type: AiType; name: string; depth: number; enginePath: str
 
 const defaultPlayers: { black: PlayerConfig; white: PlayerConfig } = {
   black: { type: "simple", name: "先手AI", depth: 1, enginePath: "" },
-  white: { type: "simple", name: "後手AI", depth: 1, enginePath: "" }
+  white: { type: "simple", name: "後手AI", depth: 1, enginePath: "" },
 };
 
 export function App() {
@@ -274,7 +269,7 @@ export function App() {
   const maxReplayPly = activeLog.length;
   const currentSnapshot = loadedArchive
     ? loadedArchive.snapshots[replayPly]
-    : replaySnapshot ?? state;
+    : (replaySnapshot ?? state);
   const isArchiveMode = loadedArchive !== null;
   const isInteractive =
     !isArchiveMode &&
@@ -287,7 +282,7 @@ export function App() {
 
   const legalTargets = useMemo(
     () => computeLegalTargets(selection, isInteractive && state ? state.legalMoves : []),
-    [selection, isInteractive, state]
+    [selection, isInteractive, state],
   );
 
   const selectedSquareUSI =
@@ -301,25 +296,30 @@ export function App() {
     return state.legalMoves.slice(0, 24);
   }, [isArchiveMode, state]);
 
-  async function refreshState(): Promise<void> {
+  const loadedArchiveRef = useRef(loadedArchive);
+  loadedArchiveRef.current = loadedArchive;
+  const replayPlyRef = useRef(replayPly);
+  replayPlyRef.current = replayPly;
+
+  const refreshState = useCallback(async (): Promise<void> => {
     const nextState = await requestJson<GameState>("/api/state");
     setState(nextState);
     setReplayPly((current) => (current > nextState.log.length ? nextState.log.length : current));
-    if (!loadedArchive && replayPly === nextState.log.length) {
+    if (!loadedArchiveRef.current && replayPlyRef.current === nextState.log.length) {
       setReplaySnapshot(null);
     }
-  }
+  }, []);
 
-  async function refreshArchives(): Promise<void> {
+  const refreshArchives = useCallback(async (): Promise<void> => {
     setArchives(await requestJson<GameArchiveSummary[]>("/api/games"));
-  }
+  }, []);
 
   useEffect(() => {
     refreshState().catch((nextError: unknown) =>
-      setError(nextError instanceof Error ? nextError.message : String(nextError))
+      setError(nextError instanceof Error ? nextError.message : String(nextError)),
     );
     refreshArchives().catch(() => undefined);
-  }, []);
+  }, [refreshState, refreshArchives]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNowMs(Date.now()), 200);
@@ -330,13 +330,13 @@ export function App() {
     const timer = window.setInterval(() => {
       if (!loadedArchive) {
         refreshState().catch((nextError: unknown) =>
-          setError(nextError instanceof Error ? nextError.message : String(nextError))
+          setError(nextError instanceof Error ? nextError.message : String(nextError)),
         );
       }
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [loadedArchive, replayPly]);
+  }, [loadedArchive, refreshState]);
 
   async function runAction(action: () => Promise<GameState>): Promise<void> {
     try {
@@ -357,8 +357,8 @@ export function App() {
     await runAction(() =>
       requestJson<GameState>("/api/move", {
         method: "POST",
-        body: JSON.stringify({ usi })
-      })
+        body: JSON.stringify({ usi }),
+      }),
     );
   }
 
@@ -400,7 +400,7 @@ export function App() {
       }
 
       const clickedPiece = currentSnapshot.board.find(
-        (s) => s.file === file && s.rank === rank
+        (s) => s.file === file && s.rank === rank,
       )?.piece;
       if (clickedPiece?.side === currentSnapshot.turn) {
         setSelection({ kind: "square", file, rank });
@@ -411,7 +411,7 @@ export function App() {
     }
 
     const clickedPiece = currentSnapshot.board.find(
-      (s) => s.file === file && s.rank === rank
+      (s) => s.file === file && s.rank === rank,
     )?.piece;
     if (clickedPiece?.side === currentSnapshot.turn) {
       setSelection({ kind: "square", file, rank });
@@ -536,7 +536,7 @@ export function App() {
                       onChange={(e) =>
                         setPlayers((prev) => ({
                           ...prev,
-                          [side]: { ...prev[side], type: e.target.value as AiType }
+                          [side]: { ...prev[side], type: e.target.value as AiType },
                         }))
                       }
                       value={players[side].type}
@@ -552,7 +552,7 @@ export function App() {
                       onChange={(e) =>
                         setPlayers((prev) => ({
                           ...prev,
-                          [side]: { ...prev[side], name: e.target.value }
+                          [side]: { ...prev[side], name: e.target.value },
                         }))
                       }
                       placeholder="表示名"
@@ -567,7 +567,7 @@ export function App() {
                         onChange={(e) =>
                           setPlayers((prev) => ({
                             ...prev,
-                            [side]: { ...prev[side], depth: Number(e.target.value) }
+                            [side]: { ...prev[side], depth: Number(e.target.value) },
                           }))
                         }
                         value={players[side].depth}
@@ -588,7 +588,7 @@ export function App() {
                         onChange={(e) =>
                           setPlayers((prev) => ({
                             ...prev,
-                            [side]: { ...prev[side], enginePath: e.target.value }
+                            [side]: { ...prev[side], enginePath: e.target.value },
                           }))
                         }
                         placeholder="例: C:\engines\yaneuraou.exe"
@@ -602,7 +602,11 @@ export function App() {
             <label className="stepModeLabel">
               <input
                 checked={state.aiRunning ? state.stepMode : stepMode}
-                disabled={isArchiveMode || state.status === "finished" || (state.status !== "ready" && !state.aiRunning)}
+                disabled={
+                  isArchiveMode ||
+                  state.status === "finished" ||
+                  (state.status !== "ready" && !state.aiRunning)
+                }
                 onChange={(e) => {
                   const next = e.target.checked;
                   setStepMode(next);
@@ -610,8 +614,8 @@ export function App() {
                     void runAction(() =>
                       requestJson<GameState>("/api/ai/mode", {
                         method: "POST",
-                        body: JSON.stringify({ stepMode: next })
-                      })
+                        body: JSON.stringify({ stepMode: next }),
+                      }),
                     );
                   }
                 }}
@@ -627,8 +631,12 @@ export function App() {
                   runAction(() =>
                     requestJson<GameState>("/api/ai/start", {
                       method: "POST",
-                      body: JSON.stringify({ black: players.black, white: players.white, stepMode })
-                    })
+                      body: JSON.stringify({
+                        black: players.black,
+                        white: players.white,
+                        stepMode,
+                      }),
+                    }),
                   )
                 }
                 type="button"
@@ -652,9 +660,7 @@ export function App() {
                   <button
                     disabled={state.aiThinking}
                     onClick={() =>
-                      runAction(() =>
-                        requestJson<GameState>("/api/ai/step", { method: "POST" })
-                      )
+                      runAction(() => requestJson<GameState>("/api/ai/step", { method: "POST" }))
                     }
                     type="button"
                   >
@@ -670,7 +676,7 @@ export function App() {
                 onClick={() => {
                   setPlayers(defaultPlayers);
                   return runAction(() =>
-                    requestJson<GameState>("/api/new-game", { method: "POST" })
+                    requestJson<GameState>("/api/new-game", { method: "POST" }),
                   );
                 }}
                 type="button"
@@ -708,8 +714,8 @@ export function App() {
                     runAction(() =>
                       requestJson<GameState>("/api/resign", {
                         method: "POST",
-                        body: JSON.stringify({ side: "black" })
-                      })
+                        body: JSON.stringify({ side: "black" }),
+                      }),
                     )
                   }
                   type="button"
@@ -723,8 +729,8 @@ export function App() {
                     runAction(() =>
                       requestJson<GameState>("/api/resign", {
                         method: "POST",
-                        body: JSON.stringify({ side: "white" })
-                      })
+                        body: JSON.stringify({ side: "white" }),
+                      }),
                     )
                   }
                   type="button"

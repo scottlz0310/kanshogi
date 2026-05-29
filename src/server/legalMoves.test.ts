@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest";
 import { InitialPositionSFEN, Position } from "tsshogi";
+import { describe, expect, test } from "vitest";
 import { generateLegalMoves } from "./legalMoves";
 
 function initialPosition() {
