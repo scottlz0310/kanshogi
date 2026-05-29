@@ -19,18 +19,18 @@ AI同士の将棋対局を観戦し、思考プロセスを可視化するロー
 ## クイックスタート
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 開発サーバー起動後、ブラウザで `http://localhost:5173` を開く。
 
 | コマンド | 説明 |
 |---|---|
-| `npm run dev` | 開発サーバー（Vite HMR + Express） |
-| `npm run build && npm start` | 本番ビルド後に起動（ポート 3030） |
-| `npm test` | テスト実行 |
-| `npm run typecheck` | 型チェックのみ |
+| `pnpm dev` | 開発サーバー（Vite HMR + Express） |
+| `pnpm build && pnpm start` | 本番ビルド後に起動（ポート 3030） |
+| `pnpm test` | テスト実行 |
+| `pnpm typecheck` | 型チェックのみ |
 
 ## AI種別
 
@@ -50,9 +50,9 @@ npm run dev
 別プロセスとしてOllamaエージェントを起動する実験用経路。UIのAI開始との同時使用は非推奨。
 
 ```bash
-npm run agents        # 先手・後手同時起動
-npm run agent:black   # 先手のみ
-npm run agent:white   # 後手のみ
+pnpm agents        # 先手・後手同時起動
+pnpm agent:black   # 先手のみ
+pnpm agent:white   # 後手のみ
 ```
 
 ## 技術スタック

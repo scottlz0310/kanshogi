@@ -1,0 +1,3 @@
+# esbuild はネイティブバイナリ配置のためビルドスクリプト実行を許可する
+allowBuilds:
+  esbuild: true
