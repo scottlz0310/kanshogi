@@ -24,8 +24,8 @@ importers:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       tsshogi:
-        specifier: ^2.3.3
-        version: 2.3.3
+        specifier: ^2.3.4
+        version: 2.3.4
       tsx:
         specifier: ^4.22.4
         version: 4.22.4
@@ -1119,8 +1119,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsshogi@2.3.3:
-    resolution: {integrity: sha512-XVwB4QB7CU5Lv/ylzXNnIYH1wI3pWiF6gqzqX3+ewiPVN1IWdsd0PVkmLRsn8JTd66SjnMGhXeGKunp2Ga5FTw==}
+  tsshogi@2.3.4:
+    resolution: {integrity: sha512-+nl6SWiMJfxmNCMG4KsnDE+ozZZsovZaBZGvSM52DJQiShU05HdgwbxalvkiZVQBzcTib75CeFzfZiEPuS5haQ==}
 
   tsx@4.22.4:
     resolution: {integrity: sha512-X8EX+XV4QR5xCsrgxaED954zTDfY8KqlDtskKEL0cHhyS/P8b4IFOvGDQpsC9Q1XnLq915wEfwwY/zzskCtmhg==}
@@ -2184,7 +2184,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsshogi@2.3.3: {}
+  tsshogi@2.3.4: {}
 
   tsx@4.22.4:
     dependencies:
