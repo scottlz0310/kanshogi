@@ -103,17 +103,17 @@ Content-Type: application/json
 - `aiRunning === true` の間は組み込み AI が手を打ち続ける。外部エージェントと競合するため、`POST /api/ai/stop` で停止してから外部エージェントを動かすこと。
 - `status === "finished"` 後の `/api/move` は 400 エラーになる。新規対局は `POST /api/new-game` で開始する。
 - 盤面クリック操作は Phase 5 で実装済み。ただし外部エージェントからは USI 入力欄経由を推奨する。
-- `pnpm agents` による外部エージェントと組み込み AI (`ai-start`) の同時起動は非推奨。
+- `bun run agents` による外部エージェントと組み込み AI (`ai-start`) の同時起動は非推奨。
 
 ## ollama 外部エージェントの起動
 
 ```bash
 # 先手と後手を別ターミナルで起動
-pnpm agent:black   # 先手Gemma4
-pnpm agent:white   # 後手Gemma4
+bun run agent:black   # 先手Gemma4
+bun run agent:white   # 後手Gemma4
 
 # または同時起動
-pnpm agents
+bun run agents
 ```
 
 環境変数で接続先を変更できる：

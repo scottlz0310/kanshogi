@@ -10,17 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm biome ci .
-      - run: pnpm typecheck
-      - run: pnpm coverage
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Verify Bun version contract
+        run: |
+          expected="$(cat .bun-version)"
+          actual_package_manager="$(node -p 'require("./package.json").packageManager')"
+          test "$(bun --version)" = "$expected"
+          test "$actual_package_manager" = "bun@$expected"
+      - run: bun ci
+      - run: bunx biome ci .
+      - run: bun run typecheck
+      - run: bun run coverage
       - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
-      - run: pnpm build
+      - run: bun run build

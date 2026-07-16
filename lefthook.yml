@@ -3,12 +3,12 @@ pre-commit:
   commands:
     biome:
       glob: "*.{js,jsx,ts,tsx,json,jsonc,css}"
-      run: pnpm biome check --write --no-errors-on-unmatched {staged_files}
+      run: bun run biome check --write --no-errors-on-unmatched {staged_files}
       stage_fixed: true
 
 pre-push:
   commands:
     typecheck:
-      run: pnpm typecheck
+      run: bun run typecheck
     test:
-      run: pnpm test
+      run: bun run test
