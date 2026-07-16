@@ -18,6 +18,9 @@
 
 ### Changed
 
+- パッケージマネージャを pnpm から Bun へ移行
+  - Bun 1.3.14 と isolated linker を使用し、`bun.lock` による再現可能なインストールへ統一
+  - CI・Lefthook・ドキュメント・UI のパッケージマネージャコマンドを Bun 向けに更新
 - USI エンジン接続を深層学習系エンジン（ふかうら王 / dlshogi 等）に対応
   - 子プロセスの `cwd` を実行ファイルのディレクトリに固定（`eval/eval_options.txt` 等の相対参照を解決可能に）
   - `isready` のタイムアウトを 15 秒から 10 分へ拡張（初回 TRT/ONNX エンジンビルドを許容）
