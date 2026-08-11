@@ -11,7 +11,7 @@
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
         "tsshogi": "^2.3.4",
-        "tsx": "^4.23.11",
+        "tsx": "^4.23.12",
         "typescript": "^7.0.2",
         "vite": "^8.2.1",
       },
@@ -522,7 +522,7 @@
 
     "tsshogi": ["tsshogi@2.3.4", "", {}, "sha512-+nl6SWiMJfxmNCMG4KsnDE+ozZZsovZaBZGvSM52DJQiShU05HdgwbxalvkiZVQBzcTib75CeFzfZiEPuS5haQ=="],
 
-    "tsx": ["tsx@4.23.11", "", { "dependencies": { "esbuild": "~0.28.0" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "bin": { "tsx": "dist/cli.mjs" } }, "sha512-Ry2oTEUnhBdeEdWIztY8kf3/nBGnPnjMLVGL0YfdRXMORuPER5NlKmayqxtxRxwB1xBN+RivRaJfe7PM1rtiyw=="],
+    "tsx": ["tsx@4.23.12", "", { "dependencies": { "esbuild": "~0.28.0" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "bin": { "tsx": "dist/cli.mjs" } }, "sha512-FDf4L4sYzKtzWYhU/Xm0AQFdTjdIxNo9ElTf2mxXM6k8YMHXzYUe4yODVaXP4V9uMFbVg8c0qyBccK2OOxb45Q=="],
 
     "type-is": ["type-is@2.1.0", "", { "dependencies": { "content-type": "^2.0.0", "media-typer": "^1.1.0", "mime-types": "^3.0.0" } }, "sha512-faYHw0anBbc/kWF3zFTEnxSFOAGUX9GFbOBthvDdLsIlEoWOFOtS0zgCiQYwIskL9iGXZL3kAXD8OoZ4GmMATA=="],
 
