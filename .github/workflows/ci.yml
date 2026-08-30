@@ -16,12 +16,6 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
-      - name: Verify Bun version contract
-        run: |
-          expected="$(cat .bun-version)"
-          actual_package_manager="$(node -p 'require("./package.json").packageManager')"
-          test "$(bun --version)" = "$expected"
-          test "$actual_package_manager" = "bun@$expected"
       - run: bun ci
       - run: bunx biome ci .
       - run: bun run typecheck
