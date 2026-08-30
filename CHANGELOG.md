@@ -18,8 +18,8 @@
 
 ### Changed
 
-- Bun のバージョン管理を `package.json` の `packageManager` に一元化
-  - `.bun-version` を削除し、CI の `setup-bun` は `bun-version-file: package.json` を参照するよう変更
+- Bun のバージョン管理を `.bun-version` に一元化
+  - `package.json` の `packageManager` を削除し、Bun runtime の管理元を `.bun-version` に統一
   - 二重管理の整合性を検証していた CI の「Verify Bun version contract」ステップを削除
   - Bun を 1.4.0 に更新
 - パッケージマネージャを pnpm から Bun へ移行
